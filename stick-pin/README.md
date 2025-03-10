@@ -153,6 +153,14 @@ export class GameManager extends Component {
     input.on(Input.EventType.TOUCH_START, this.onTouchStart, this);
   }
 
+  /**
+   * 组件销毁时清理
+   * 移除触摸事件监听器
+   */
+  protected onDestroy(): void {
+    input.off(Input.EventType.TOUCH_START, this.onTouchStart, this);
+  }
+
   start() {
     this.pinSpawn();
   }
@@ -200,3 +208,4 @@ export class GameManager extends Component {
 
 ### 检测碰撞
 
+在 `Pin` 节点下添加`CircleCollider2D`组件

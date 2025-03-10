@@ -2,4 +2,4 @@
 
 学习 cocos 中敲的示例
 
-[见缝插针(stick-pin)]()
+[见缝插针(stick-pin)](./stick-pin/README.md)
