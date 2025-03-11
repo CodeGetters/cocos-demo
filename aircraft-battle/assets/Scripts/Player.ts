@@ -12,6 +12,16 @@ import {
 } from "cc";
 const { ccclass, property } = _decorator;
 
+ /** 
+ * 射击类型枚举
+ * OneShoot: 单发射击
+ * TwoShoot: 双发射击
+ */
+enum ShootType {
+  OneShoot,
+  TwoShoot,
+}
+
 /**
  * 玩家控制组件
  * 负责处理玩家飞机的触摸移动控制
@@ -31,7 +41,16 @@ export class Player extends Component {
   bulletParent: Node = null;
   /** 子弹发射位置节点 */
   @property(Node)
-  bulletPosition: Node = null;
+  position1: Node = null;
+  @property(Prefab)
+  bullet2Prefab: Prefab = null;
+  @property(Node)
+  position2: Node = null;
+  @property(Node)
+  position3: Node = null;
+  /** 射击类型，默认为单发射击 */
+  @property
+  shootType: ShootType = ShootType.OneShoot;
 
   /**
    * 组件加载时调用
@@ -88,6 +107,23 @@ export class Player extends Component {
    * @param deltaTime 距离上一帧的时间间隔，单位：秒
    */
   update(deltaTime: number) {
+    // 根据射击类型选择对应的射击方法
+    switch (this.shootType) {
+      case ShootType.OneShoot:
+        this.oneShoot(deltaTime);
+        break;
+      case ShootType.TwoShoot:
+        this.twoShoot(deltaTime);
+        break;
+    }
+  }
+
+  /**
+   * 单发射击模式
+   * 从中间位置发射一颗子弹
+   * @param deltaTime 距离上一帧的时间间隔，单位：秒
+   */
+  oneShoot(deltaTime: number) {
     // 累加计时器
     this.shootTimer += deltaTime;
     // 到达发射间隔时间后创建子弹
@@ -98,7 +134,30 @@ export class Player extends Component {
       // 将子弹添加到父节点容器中
       this.bulletParent.addChild(bullet1);
       // 设置子弹的世界坐标为发射位置
-      bullet1.setWorldPosition(this.bulletPosition.worldPosition);
+      bullet1.setWorldPosition(this.position1.worldPosition);
+    }
+  }
+
+  /**
+   * 双发射击模式
+   * 从两侧位置各发射一颗子弹
+   * @param deltaTime 距离上一帧的时间间隔，单位：秒
+   */
+  twoShoot(deltaTime: number) {
+    // 累加计时器
+    this.shootTimer += deltaTime;
+    // 到达发射间隔时间后创建子弹
+    if (this.shootTimer >= this.shootRate) {
+      this.shootTimer = 0;
+      // 实例化子弹预制体
+      const bullet2 = instantiate(this.bullet2Prefab);
+      const bullet3 = instantiate(this.bullet2Prefab);
+      // 将子弹添加到父节点容器中
+      this.bulletParent.addChild(bullet2);
+      this.bulletParent.addChild(bullet3);
+      // 设置子弹的世界坐标为发射位置
+      bullet2.setWorldPosition(this.position2.worldPosition);
+      bullet3.setWorldPosition(this.position3.worldPosition);
     }
   }
 }
