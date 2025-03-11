@@ -4,7 +4,9 @@ import {
   EventTouch,
   Input,
   input,
+  instantiate,
   Node,
+  Prefab,
   Vec2,
   Vec3,
 } from "cc";
@@ -16,6 +18,21 @@ const { ccclass, property } = _decorator;
  */
 @ccclass("Player")
 export class Player extends Component {
+  /** 子弹发射计时器 */
+  shootTimer = 0;
+  /** 子弹发射间隔时间，单位：秒 */
+  @property
+  shootRate = 0.3;
+  /** 子弹预制体 */
+  @property(Prefab)
+  bullet1Prefab: Prefab = null;
+  /** 子弹的父节点容器 */
+  @property(Node)
+  bulletParent: Node = null;
+  /** 子弹发射位置节点 */
+  @property(Node)
+  bulletPosition: Node = null;
+
   /**
    * 组件加载时调用
    * 注册触摸移动事件监听
@@ -66,5 +83,22 @@ export class Player extends Component {
 
   start() {}
 
-  update(deltaTime: number) {}
+  /**
+   * 每帧更新
+   * @param deltaTime 距离上一帧的时间间隔，单位：秒
+   */
+  update(deltaTime: number) {
+    // 累加计时器
+    this.shootTimer += deltaTime;
+    // 到达发射间隔时间后创建子弹
+    if (this.shootTimer >= this.shootRate) {
+      this.shootTimer = 0;
+      // 实例化子弹预制体
+      const bullet1 = instantiate(this.bullet1Prefab);
+      // 将子弹添加到父节点容器中
+      this.bulletParent.addChild(bullet1);
+      // 设置子弹的世界坐标为发射位置
+      bullet1.setWorldPosition(this.bulletPosition.worldPosition);
+    }
+  }
 }
