@@ -1,4 +1,4 @@
-import { _decorator, Component, Node } from "cc";
+import { _decorator, Animation, Component, Node } from "cc";
 const { ccclass, property } = _decorator;
 
 /**
@@ -11,7 +11,14 @@ export class Enemy extends Component {
   @property
   speed = 300;
 
-  start() {}
+  /** 敌机动画组件引用 */
+  @property(Animation)
+  anim: Animation = null;
+
+  start() {
+    // 初始化时可以播放敌机动画
+    // this.anim.play();
+  }
 
   /**
    * 每帧更新
