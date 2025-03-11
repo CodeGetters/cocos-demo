@@ -1,17 +1,17 @@
 [
   {
     "__type__": "cc.AnimationClip",
-    "_name": "Enemy0_Down",
+    "_name": "Enem1_Hit",
     "_objFlags": 0,
     "__editorExtras__": {
       "embeddedPlayerGroups": []
     },
     "_native": "",
     "sample": 60,
-    "speed": 2,
+    "speed": 1,
     "wrapMode": 1,
     "enableTrsBlending": false,
-    "_duration": 0.6833333333333333,
+    "_duration": 0.016666666666666666,
     "_hash": 500763545,
     "_tracks": [
       {
@@ -61,30 +61,13 @@
   {
     "__type__": "cc.ObjectCurve",
     "_times": [
-      0,
-      0.16666666666666666,
-      0.3333333333333333,
-      0.5,
-      0.6666666666666666
+      0
     ],
     "_values": [
       {
-        "__uuid__": "c90c21ee-de82-403f-a254-430f7721bb53@f9941",
+        "__uuid__": "dee440db-f326-4bf5-838a-5839643f3c42@f9941",
         "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "ccf7e687-7d10-4838-919e-3a7e7c6288d2@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "3f55c726-11d7-484c-b920-8c75dba71c6e@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      {
-        "__uuid__": "8e141c60-277d-44bc-8849-435ae19cbfda@f9941",
-        "__expectedType__": "cc.SpriteFrame"
-      },
-      null
+      }
     ]
   },
   {
