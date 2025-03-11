@@ -9,7 +9,7 @@ const { ccclass, property } = _decorator;
 export class Bullet extends Component {
   /** 子弹飞行速度，单位：像素/秒 */
   @property
-  speed = 500; // 子弹飞行速度 200px/s
+  speed = 500;
 
   start() {}
 
@@ -26,5 +26,9 @@ export class Bullet extends Component {
       position.y + this.speed * deltaTime,
       position.z
     );
+    // 当子弹超出屏幕上边界时销毁子弹节点
+    if (position.y > 440) {
+      this.node.destroy()
+    }
   }
 }
