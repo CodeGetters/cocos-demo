@@ -351,7 +351,7 @@
     "enabledContactListener": true,
     "bullet": false,
     "awakeOnLoad": true,
-    "_group": 1,
+    "_group": 4,
     "_type": 1,
     "_allowSleep": false,
     "_gravityScale": 1,

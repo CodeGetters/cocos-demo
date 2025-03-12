@@ -15,8 +15,8 @@ const { ccclass, property } = _decorator;
  * 敌机控制组件
  * 负责：
  * 1. 控制敌机的向下移动
- * 2. 处理敌机的碰撞检测
- * 3. 管理敌机的生命值和销毁
+ * 2. 处理敌机的碰撞检测和受击效果
+ * 3. 管理敌机的生命值、动画和销毁
  */
 @ccclass("Enemy")
 export class Enemy extends Component {
@@ -24,22 +24,29 @@ export class Enemy extends Component {
   @property
   speed = 300;
 
-  /** 敌机动画组件引用，用于播放爆炸动画 */
+  /** 敌机动画组件引用，用于播放受击和销毁动画 */
   @property(Animation)
   anim: Animation = null;
 
-  /** 敌机生命值，可在编辑器中调整 */
+  /** 敌机生命值，可在编辑器中调整，当生命值为0时敌机会被销毁 */
   @property
   hp = 1;
 
+  /** 受击时播放的动画名称 */
   @property(CCString)
   animHit = "";
+
+  /** 击毁时播放的动画名称 */
   @property(CCString)
   animDown = "";
 
-  /** 碰撞体组件引用 */
+  /** 碰撞体组件引用，用于处理与子弹的碰撞检测 */
   collider: Collider2D = null;
 
+  /**
+   * 组件初始化
+   * 获取碰撞体组件并注册碰撞回调
+   */
   start() {
     // 获取并注册碰撞体的碰撞回调
     this.collider = this.getComponent(Collider2D);
@@ -60,10 +67,14 @@ export class Enemy extends Component {
 
   /**
    * 碰撞开始时的处理函数
-   * 1. 减少生命值
-   * 2. 播放爆炸动画
-   * 3. 禁用碰撞体防止重复触发
-   * 4. 生命值为0时延迟销毁节点
+   * 处理流程：
+   * 1. 减少敌机生命值
+   * 2. 延迟一帧销毁子弹，避免碰撞检测过程中销毁导致的报错
+   * 3. 根据生命值播放对应动画（受击/击毁）
+   * 4. 如果生命值为0，禁用碰撞体并延迟销毁敌机
+   * @param selfCollider 敌机的碰撞体组件
+   * @param otherCollider 子弹的碰撞体组件
+   * @param contact 碰撞信息
    */
   onBeginContact(
     selfCollider: Collider2D,
@@ -99,8 +110,9 @@ export class Enemy extends Component {
 
   /**
    * 每帧更新函数
-   * 1. 控制敌机向下移动
-   * 2. 检测是否超出屏幕底部边界
+   * 功能：
+   * 1. 当敌机存活时，控制其向下匀速移动
+   * 2. 当敌机超出屏幕底部边界时，自动销毁
    * @param deltaTime 距离上一帧的时间间隔，单位：秒
    */
   update(deltaTime: number) {

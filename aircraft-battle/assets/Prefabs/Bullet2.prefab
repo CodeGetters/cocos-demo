@@ -173,7 +173,7 @@
       "__id__": 9
     },
     "tag": 0,
-    "_group": 1,
+    "_group": 2,
     "_density": 1,
     "_sensor": true,
     "_friction": 0.2,
@@ -237,6 +237,7 @@
       "__id__": 0
     },
     "fileId": "99yEiLNk9Pta0mWYPqKQcR",
+    "instance": null,
     "targetOverrides": null
   }
 ]

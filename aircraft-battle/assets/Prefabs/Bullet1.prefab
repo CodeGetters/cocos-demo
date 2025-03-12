@@ -209,7 +209,7 @@
     "enabledContactListener": false,
     "bullet": false,
     "awakeOnLoad": true,
-    "_group": 1,
+    "_group": 2,
     "_type": 1,
     "_allowSleep": true,
     "_gravityScale": 1,
@@ -237,6 +237,7 @@
       "__id__": 0
     },
     "fileId": "5feVUFvppN+p7FjAkMn2Yg",
+    "instance": null,
     "targetOverrides": null
   }
 ]
