@@ -62,10 +62,10 @@ export class Enemy extends Component {
     this.hp -= 1;
     this.anim.play();
     this.collider = this.getComponent(Collider2D);
-    if (this.collider) {
-      this.collider.enabled = false;
-    }
     if (this.hp <= 0) {
+      if (this.collider) {
+        this.collider.enabled = false;
+      }
       // 延迟1秒销毁，留时间播放爆炸动画
       this.scheduleOnce(() => {
         this.node.destroy();
