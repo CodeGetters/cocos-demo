@@ -29,15 +29,21 @@
       },
       {
         "__id__": 12
+      },
+      {
+        "__id__": 14
+      },
+      {
+        "__id__": 16
       }
     ],
     "_prefab": {
-      "__id__": 14
+      "__id__": 18
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
+      "x": -116.64,
+      "y": 244.001,
       "z": 0
     },
     "_lrot": {
@@ -89,8 +95,8 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -96.383,
-      "y": 224.722,
+      "x": 0,
+      "y": 0,
       "z": 0
     },
     "_lrot": {
@@ -204,16 +210,16 @@
     "playOnLoad": false,
     "_clips": [
       {
-        "__uuid__": "a42ee97c-69e7-4daa-b47a-529976869b3c",
+        "__uuid__": "3d602444-74e8-42b9-9bc4-542548b2e3a9",
         "__expectedType__": "cc.AnimationClip"
       },
       {
-        "__uuid__": "3d602444-74e8-42b9-9bc4-542548b2e3a9",
+        "__uuid__": "a42ee97c-69e7-4daa-b47a-529976869b3c",
         "__expectedType__": "cc.AnimationClip"
       }
     ],
     "_defaultClip": {
-      "__uuid__": "3d602444-74e8-42b9-9bc4-542548b2e3a9",
+      "__uuid__": "a42ee97c-69e7-4daa-b47a-529976869b3c",
       "__expectedType__": "cc.AnimationClip"
     },
     "_id": ""
@@ -279,11 +285,144 @@
     "anim": {
       "__id__": 7
     },
+    "hp": 3,
+    "animHit": "Enemy1_Hit",
+    "animDown": "Enemy1_Down",
     "_id": ""
   },
   {
     "__type__": "cc.CompPrefabInfo",
     "fileId": "8dGOcOUS5DGIx88Msk1jr/"
+  },
+  {
+    "__type__": "cc.PolygonCollider2D",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 15
+    },
+    "tag": 0,
+    "_group": 1,
+    "_density": 1,
+    "_sensor": true,
+    "_friction": 0.2,
+    "_restitution": 0,
+    "_offset": {
+      "__type__": "cc.Vec2",
+      "x": -40.900000000000006,
+      "y": 101.89999999999999
+    },
+    "_points": [
+      {
+        "__type__": "cc.Vec2",
+        "x": 7,
+        "y": -87
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 22.2,
+        "y": -83.1
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 40.7,
+        "y": -54.1
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 61.4,
+        "y": -82.8
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 75.6,
+        "y": -87.6
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 75.9,
+        "y": -119.5
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 62.4,
+        "y": -122
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 55.9,
+        "y": -126.9
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 47.3,
+        "y": -145.6
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 34.2,
+        "y": -146
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 27.1,
+        "y": -127.8
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 19.1,
+        "y": -121.5
+      },
+      {
+        "__type__": "cc.Vec2",
+        "x": 6.5,
+        "y": -119.3
+      }
+    ],
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "f0tX+2xfZMsK/nmUivFjwm"
+  },
+  {
+    "__type__": "cc.RigidBody2D",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "__prefab": {
+      "__id__": 17
+    },
+    "enabledContactListener": true,
+    "bullet": false,
+    "awakeOnLoad": true,
+    "_group": 1,
+    "_type": 1,
+    "_allowSleep": false,
+    "_gravityScale": 1,
+    "_linearDamping": 0.1,
+    "_angularDamping": 0,
+    "_linearVelocity": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_angularVelocity": 0,
+    "_fixedRotation": false,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.CompPrefabInfo",
+    "fileId": "5byP8DSPZCp5a0FUQEAyUH"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -294,6 +433,6 @@
       "__id__": 0
     },
     "fileId": "59dUHri7pMNpzheTgnd1EF",
-    "targetOverrides": null
+    "targetOverrides": []
   }
 ]

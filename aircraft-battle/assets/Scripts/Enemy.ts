@@ -6,6 +6,8 @@ import {
   Contact2DType,
   Node,
   PhysicsSystem2D,
+  CCString,
+  IPhysics2DContact,
 } from "cc";
 const { ccclass, property } = _decorator;
 
@@ -29,6 +31,11 @@ export class Enemy extends Component {
   /** 敌机生命值，可在编辑器中调整 */
   @property
   hp = 1;
+
+  @property(CCString)
+  animHit = "";
+  @property(CCString)
+  animDown = "";
 
   /** 碰撞体组件引用 */
   collider: Collider2D = null;
@@ -58,9 +65,26 @@ export class Enemy extends Component {
    * 3. 禁用碰撞体防止重复触发
    * 4. 生命值为0时延迟销毁节点
    */
-  onBeginContact() {
+  onBeginContact(
+    selfCollider: Collider2D,
+    otherCollider: Collider2D,
+    contact: IPhysics2DContact | null
+  ) {
     this.hp -= 1;
-    this.anim.play();
+    // 销毁子弹，需要注意：这里不能直接销毁，在接触的一瞬间还在判断的时候销毁就会报错
+    this.scheduleOnce(() => {
+      if (otherCollider) {
+        otherCollider.enabled;
+        otherCollider.node?.destroy();
+      }
+    }, 0);
+    // otherCollider.node.destroy();
+    if (this.hp > 0) {
+      this.anim.play(this.animHit);
+    } else {
+      this.anim.play(this.animDown);
+    }
+
     this.collider = this.getComponent(Collider2D);
     if (this.hp <= 0) {
       if (this.collider) {
