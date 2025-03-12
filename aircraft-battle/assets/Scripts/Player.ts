@@ -1,5 +1,7 @@
 import {
   _decorator,
+  Animation,
+  CCString,
   Collider,
   Collider2D,
   Component,
@@ -28,7 +30,11 @@ enum ShootType {
 
 /**
  * 玩家控制组件
- * 负责处理玩家飞机的触摸移动控制
+ * 负责：
+ * 1. 处理玩家飞机的触摸移动控制
+ * 2. 管理子弹的发射逻辑（单发/双发模式）
+ * 3. 处理与敌机的碰撞检测和生命值管理
+ * 4. 控制玩家飞机的受击和销毁动画
  */
 @ccclass("Player")
 export class Player extends Component {
@@ -55,8 +61,17 @@ export class Player extends Component {
   /** 射击类型，默认为单发射击 */
   @property
   shootType: ShootType = ShootType.OneShoot;
-  @property(Collider2D)
   collider: Collider2D = null;
+  @property(Animation)
+  anim: Animation = null;
+  @property
+  lifeCount = 5;
+  /** 受击时播放的动画名称 */
+  @property(CCString)
+  animHit = "";
+  /** 击毁时播放的动画名称 */
+  @property(CCString)
+  animDown = "";
 
   /**
    * 组件加载时调用
@@ -84,12 +99,11 @@ export class Player extends Component {
   /**
    * 碰撞开始时的处理函数
    * 处理流程：
-   * 1. 减少敌机生命值
-   * 2. 延迟一帧销毁子弹，避免碰撞检测过程中销毁导致的报错
-   * 3. 根据生命值播放对应动画（受击/击毁）
-   * 4. 如果生命值为0，禁用碰撞体并延迟销毁敌机
-   * @param selfCollider 敌机的碰撞体组件
-   * @param otherCollider 子弹的碰撞体组件
+   * 1. 减少玩家生命值
+   * 2. 根据剩余生命值播放对应动画（受击/击毁）
+   * 3. 如果生命值为0，禁用碰撞体并结束游戏
+   * @param selfCollider 玩家飞机的碰撞体组件
+   * @param otherCollider 敌机的碰撞体组件
    * @param contact 碰撞信息
    */
   onBeginContact(
@@ -97,7 +111,20 @@ export class Player extends Component {
     otherCollider: Collider2D,
     contact: IPhysics2DContact | null
   ) {
-    this.collider = this.getComponent(Collider2D);
+    console.log("--------lifeCount------", this.lifeCount);
+    this.lifeCount--;
+    if (this.lifeCount > 0) {
+      console.log("--------animHit------");
+      this.anim.play(this.animHit);
+    } else {
+      console.log("--------animDown------");
+      this.anim.play(this.animDown);
+    }
+    if (this.lifeCount <= 0) {
+      if (this.collider) {
+        this.collider.enabled = false;
+      }
+    }
   }
 
   /**
@@ -105,6 +132,10 @@ export class Player extends Component {
    * @param event 触摸事件对象，包含触摸位置变化信息
    */
   onTouchMove(event: EventTouch) {
+    if (this.lifeCount < 1) {
+      console.log("--------结束了------");
+      return;
+    }
     const position = this.node.position;
     // 根据触摸移动的偏移量计算目标位置
     let targetPosition = new Vec3(

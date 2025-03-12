@@ -9,14 +9,16 @@ import {
   CCString,
   IPhysics2DContact,
 } from "cc";
+import { Bullet } from "./Bullet";
 const { ccclass, property } = _decorator;
 
 /**
  * 敌机控制组件
  * 负责：
- * 1. 控制敌机的向下移动
- * 2. 处理敌机的碰撞检测和受击效果
- * 3. 管理敌机的生命值、动画和销毁
+ * 1. 控制敌机的向下匀速移动
+ * 2. 处理与玩家子弹的碰撞检测
+ * 3. 管理敌机的生命值、受击和销毁效果
+ * 4. 处理敌机超出屏幕边界的自动销毁
  */
 @ccclass("Enemy")
 export class Enemy extends Component {
@@ -69,9 +71,9 @@ export class Enemy extends Component {
    * 碰撞开始时的处理函数
    * 处理流程：
    * 1. 减少敌机生命值
-   * 2. 延迟一帧销毁子弹，避免碰撞检测过程中销毁导致的报错
-   * 3. 根据生命值播放对应动画（受击/击毁）
-   * 4. 如果生命值为0，禁用碰撞体并延迟销毁敌机
+   * 2. 检查并安全销毁击中的子弹
+   * 3. 根据剩余生命值播放对应动画（受击/击毁）
+   * 4. 生命值为0时禁用碰撞体并延迟销毁敌机（等待动画播放）
    * @param selfCollider 敌机的碰撞体组件
    * @param otherCollider 子弹的碰撞体组件
    * @param contact 碰撞信息
@@ -83,12 +85,13 @@ export class Enemy extends Component {
   ) {
     this.hp -= 1;
     // 销毁子弹，需要注意：这里不能直接销毁，在接触的一瞬间还在判断的时候销毁就会报错
-    this.scheduleOnce(() => {
-      if (otherCollider) {
+    if (otherCollider && otherCollider.getComponent(Bullet)) {
+      this.scheduleOnce(() => {
         otherCollider.enabled;
         otherCollider.node?.destroy();
-      }
-    }, 0);
+      }, 0);
+    }
+
     // otherCollider.node.destroy();
     if (this.hp > 0) {
       this.anim.play(this.animHit);
