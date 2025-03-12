@@ -1,10 +1,14 @@
 import {
   _decorator,
+  Collider,
+  Collider2D,
   Component,
+  Contact2DType,
   EventTouch,
   Input,
   input,
   instantiate,
+  IPhysics2DContact,
   Node,
   Prefab,
   Vec2,
@@ -12,7 +16,7 @@ import {
 } from "cc";
 const { ccclass, property } = _decorator;
 
- /** 
+/**
  * 射击类型枚举
  * OneShoot: 单发射击
  * TwoShoot: 双发射击
@@ -51,6 +55,8 @@ export class Player extends Component {
   /** 射击类型，默认为单发射击 */
   @property
   shootType: ShootType = ShootType.OneShoot;
+  @property(Collider2D)
+  collider: Collider2D = null;
 
   /**
    * 组件加载时调用
@@ -58,6 +64,12 @@ export class Player extends Component {
    */
   protected onLoad(): void {
     input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
+
+    // 获取并注册碰撞体的碰撞回调
+    this.collider = this.getComponent(Collider2D);
+    if (this.collider) {
+      this.collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+    }
   }
 
   /**
@@ -66,6 +78,26 @@ export class Player extends Component {
    */
   protected onDestroy(): void {
     input.off(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
+    this.collider.off(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+  }
+
+  /**
+   * 碰撞开始时的处理函数
+   * 处理流程：
+   * 1. 减少敌机生命值
+   * 2. 延迟一帧销毁子弹，避免碰撞检测过程中销毁导致的报错
+   * 3. 根据生命值播放对应动画（受击/击毁）
+   * 4. 如果生命值为0，禁用碰撞体并延迟销毁敌机
+   * @param selfCollider 敌机的碰撞体组件
+   * @param otherCollider 子弹的碰撞体组件
+   * @param contact 碰撞信息
+   */
+  onBeginContact(
+    selfCollider: Collider2D,
+    otherCollider: Collider2D,
+    contact: IPhysics2DContact | null
+  ) {
+    this.collider = this.getComponent(Collider2D);
   }
 
   /**
