@@ -281,6 +281,7 @@
     "anim": {
       "__id__": 7
     },
+    "hp": 1,
     "_id": ""
   },
   {
@@ -345,7 +346,7 @@
     "__prefab": {
       "__id__": 17
     },
-    "enabledContactListener": false,
+    "enabledContactListener": true,
     "bullet": false,
     "awakeOnLoad": true,
     "_group": 1,

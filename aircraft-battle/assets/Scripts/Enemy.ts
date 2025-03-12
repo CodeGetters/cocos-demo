@@ -1,4 +1,12 @@
-import { _decorator, Animation, Component, Node } from "cc";
+import {
+  _decorator,
+  Animation,
+  Collider2D,
+  Component,
+  Contact2DType,
+  Node,
+  PhysicsSystem2D,
+} from "cc";
 const { ccclass, property } = _decorator;
 
 /**
@@ -15,19 +23,34 @@ export class Enemy extends Component {
   @property(Animation)
   anim: Animation = null;
 
+  @property
+  hp = 1; // 血量
+
   start() {
-    // 初始化时可以播放敌机动画
-    // this.anim.play();
+    // 注册单个碰撞体的回调函数
+    let collider = this.getComponent(Collider2D);
+    if (collider) {
+      collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+      collider.on(Contact2DType.END_CONTACT, this.onEndContact, this);
+    }
   }
+
+  onBeginContact() {
+    this.hp -= 1;
+    this.anim.play();
+  }
+  onEndContact() {}
 
   /**
    * 每帧更新
    * @param deltaTime 距离上一帧的时间间隔，单位：秒
    */
   update(deltaTime: number) {
-    // 获取当前位置
-    const position = this.node.position;
-    // 根据速度更新敌机位置，使其向下移动
-    this.node.setPosition(position.x, position.y - this.speed * deltaTime);
+    if (this.hp > 0) {
+      // 获取当前位置
+      const position = this.node.position;
+      // 根据速度更新敌机位置，使其向下移动
+      this.node.setPosition(position.x, position.y - this.speed * deltaTime);
+    }
   }
 }
