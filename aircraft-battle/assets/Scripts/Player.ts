@@ -150,30 +150,54 @@ export class Player extends Component {
   ) {
     const reward = otherCollider.getComponent(Reward);
     if (reward) {
-      switch (reward.rewordType) {
-        case RewordType.TwoShoot:
-          this.transformToTwoShoot();
-          break;
-        case RewordType.Bomb:
-          break;
-      }
+      this.onContractToReward(reward);
     } else {
       this.onContactToEnemy();
     }
   }
 
-  /** 切换到双发射击模式，重置计时器 */
+  /**
+   * 处理与道具的碰撞
+   * 处理流程：
+   * 1. 根据道具类型触发对应效果（双发射击/炸弹）
+   * 2. 延迟一帧销毁道具，避免碰撞检测过程中销毁导致的报错
+   * @param reward 道具组件实例
+   */
+  onContractToReward(reward: Reward) {
+    switch (reward.rewordType) {
+      case RewordType.TwoShoot:
+        this.transformToTwoShoot();
+        break;
+      case RewordType.Bomb:
+        break;
+    }
+    this.scheduleOnce(() => {
+      reward.node?.destroy();
+    }, 0);
+  }
+  
+  /** 
+   * 切换到双发射击模式
+   * 1. 重置双发射击计时器
+   * 2. 切换射击类型为双发模式
+   * 3. 计时结束后自动恢复单发模式
+   */
   transformToTwoShoot() {
     this.twoShootTimer = 0;
     this.shootType = ShootType.TwoShoot;
   }
-
-  /** 切换回单发射击模式 */
+  
+  /** 
+   * 切换回单发射击模式
+   * 在以下情况触发：
+   * 1. 双发射击持续时间结束
+   * 2. 玩家生命值为0时
+   */
   transformToOneShoot() {
     this.shootType = ShootType.OneShoot;
   }
 
-  /** 
+  /**
    * 处理与敌机碰撞的逻辑
    * 1. 检查是否处于无敌状态
    * 2. 重置无敌时间计时器

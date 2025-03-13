@@ -21,7 +21,7 @@ export enum RewordType {
  */
 @ccclass("Reward")
 export class Reward extends Component {
-  /** 
+  /**
    * 奖励道具移动速度
    * 可在编辑器中调整，单位：像素/秒
    * 默认值与敌机移动速度相同，保持游戏节奏的一致性
@@ -29,7 +29,7 @@ export class Reward extends Component {
   @property
   speed = 300;
 
-  /** 
+  /**
    * 奖励道具类型
    * 可在编辑器中通过下拉菜单选择
    * TwoShoot: 获得后玩家进入双发射击模式，持续一定时间
@@ -52,5 +52,9 @@ export class Reward extends Component {
       position.y - this.speed * deltaTime,
       position.z
     );
+    // 当奖励超出屏幕底部时销毁节点
+    if (this.node.position.y < -580) {
+      this.node.destroy();
+    }
   }
 }
