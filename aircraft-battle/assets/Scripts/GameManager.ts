@@ -24,6 +24,11 @@ export class GameManager extends Component {
   /** 炸弹道具数量 */
   @property
   private bombNumber = 0;
+
+  /** 游戏总分 */
+  @property
+  private score = 0;
+
   /**
    * 组件初始化
    * 设置单例实例引用
@@ -52,5 +57,23 @@ export class GameManager extends Component {
    */
   public getBombNumber() {
     return this.bombNumber;
+  }
+  /**
+   * 增加游戏分数
+   * 1. 增加指定分数
+   * 2. 触发分数变化事件
+   * @param num 要增加的分数值
+   */
+  public addScore(num: number) {
+    this.score += num;
+    this.node.emit("onScoreChange");
+  }
+
+  /**
+   * 获取当前游戏分数
+   * @returns 当前游戏总分
+   */
+  public getGameScore() {
+    return this.score;
   }
 }

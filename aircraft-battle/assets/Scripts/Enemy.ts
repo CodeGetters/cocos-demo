@@ -10,6 +10,7 @@ import {
   IPhysics2DContact,
 } from "cc";
 import { Bullet } from "./Bullet";
+import { GameManager } from "./GameManager";
 const { ccclass, property } = _decorator;
 
 /**
@@ -42,6 +43,10 @@ export class Enemy extends Component {
   @property(CCString)
   animDown = "";
 
+  /** 击毁敌机获得的分数 */
+  @property
+  score = 100;
+
   /** 碰撞体组件引用，用于处理与子弹的碰撞检测 */
   collider: Collider2D = null;
 
@@ -73,10 +78,11 @@ export class Enemy extends Component {
    * 1. 减少敌机生命值
    * 2. 检查并安全销毁击中的子弹
    * 3. 根据剩余生命值播放对应动画（受击/击毁）
-   * 4. 生命值为0时禁用碰撞体并延迟销毁敌机（等待动画播放）
-   * @param selfCollider 敌机的碰撞体组件
-   * @param otherCollider 子弹的碰撞体组件
-   * @param contact 碰撞信息
+   * 4. 生命值为0时：
+   *    - 增加游戏分数
+   *    - 播放击毁动画
+   *    - 禁用碰撞体
+   *    - 延迟销毁敌机
    */
   onBeginContact(
     selfCollider: Collider2D,
@@ -92,10 +98,10 @@ export class Enemy extends Component {
       }, 0);
     }
 
-    // otherCollider.node.destroy();
     if (this.hp > 0) {
       this.anim.play(this.animHit);
     } else {
+      GameManager.getInstance().addScore(this.score);
       this.anim.play(this.animDown);
     }
 
