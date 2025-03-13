@@ -17,6 +17,7 @@ import {
   Vec2,
   Vec3,
 } from "cc";
+import { Reward, RewordType } from "./Reward";
 const { ccclass, property } = _decorator;
 
 /**
@@ -38,6 +39,7 @@ enum ShootType {
  * 2. 管理子弹的发射逻辑（无射击/单发/双发模式）
  * 3. 处理与敌机的碰撞检测和生命值管理
  * 4. 控制玩家飞机的受击无敌时间和销毁动画
+ * 5. 处理道具效果（双发射击、炸弹等）
  */
 @ccclass("Player")
 export class Player extends Component {
@@ -105,6 +107,12 @@ export class Player extends Component {
   /** 是否处于无敌状态 */
   isInvincible = false;
 
+  /** 双发射击持续时间，可在编辑器中调整，单位：秒 */
+  @property
+  twoShootTime = 5;
+  /** 双发射击计时器 */
+  twoShootTimer = 0;
+
   /**
    * 组件加载时调用
    * 注册触摸移动事件监听
@@ -131,22 +139,53 @@ export class Player extends Component {
   /**
    * 碰撞开始时的处理函数
    * 处理流程：
-   * 1. 减少玩家生命值
-   * 2. 根据剩余生命值播放对应动画（受击/击毁）
-   * 3. 如果生命值为0，禁用碰撞体并结束游戏
-   * @param selfCollider 玩家飞机的碰撞体组件
-   * @param otherCollider 敌机的碰撞体组件
-   * @param contact 碰撞信息
+   * 1. 检测碰撞对象类型（敌机/道具）
+   * 2. 如果是道具，根据道具类型触发对应效果
+   * 3. 如果是敌机，处理受击逻辑和生命值
    */
   onBeginContact(
     selfCollider: Collider2D,
     otherCollider: Collider2D,
     contact: IPhysics2DContact | null
   ) {
+    const reward = otherCollider.getComponent(Reward);
+    if (reward) {
+      switch (reward.rewordType) {
+        case RewordType.TwoShoot:
+          this.transformToTwoShoot();
+          break;
+        case RewordType.Bomb:
+          break;
+      }
+    } else {
+      this.onContactToEnemy();
+    }
+  }
+
+  /** 切换到双发射击模式，重置计时器 */
+  transformToTwoShoot() {
+    this.twoShootTimer = 0;
+    this.shootType = ShootType.TwoShoot;
+  }
+
+  /** 切换回单发射击模式 */
+  transformToOneShoot() {
+    this.shootType = ShootType.OneShoot;
+  }
+
+  /** 
+   * 处理与敌机碰撞的逻辑
+   * 1. 检查是否处于无敌状态
+   * 2. 重置无敌时间计时器
+   * 3. 减少生命值并播放相应动画
+   * 4. 生命值为0时禁用射击和碰撞
+   */
+  onContactToEnemy() {
     if (this.isInvincible) return;
     this.invincibleTimer = 0;
     this.isInvincible = true;
     this.lifeCount--;
+
     if (this.lifeCount > 0) {
       this.anim.play(this.animHit);
     } else {
@@ -246,6 +285,12 @@ export class Player extends Component {
    * @param deltaTime 距离上一帧的时间间隔，单位：秒
    */
   twoShoot(deltaTime: number) {
+    // 双发子弹使用周期
+    this.twoShootTimer += deltaTime;
+    if (this.twoShootTimer >= this.twoShootTime) {
+      this.transformToOneShoot();
+    }
+
     // 累加计时器
     this.shootTimer += deltaTime;
     // 到达发射间隔时间后创建子弹
