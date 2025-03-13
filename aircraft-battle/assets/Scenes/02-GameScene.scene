@@ -1010,6 +1010,7 @@
     "lifeCount": 5,
     "animHit": "Player_Hit",
     "animDown": "Player_Down",
+    "invincibleTime": 1,
     "_id": "b5PI7+YqFJh7ljpQ6rpi+9"
   },
   {
@@ -1092,7 +1093,7 @@
     "enabledContactListener": true,
     "bullet": false,
     "awakeOnLoad": true,
-    "_group": 8,
+    "_group": 1,
     "_type": 1,
     "_allowSleep": false,
     "_gravityScale": 1,
@@ -1118,7 +1119,7 @@
     "_enabled": true,
     "__prefab": null,
     "tag": 0,
-    "_group": 1,
+    "_group": 8,
     "_density": 1,
     "_sensor": true,
     "_friction": 0.2,

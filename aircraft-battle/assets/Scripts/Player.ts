@@ -20,10 +20,12 @@ const { ccclass, property } = _decorator;
 
 /**
  * 射击类型枚举
- * OneShoot: 单发射击
- * TwoShoot: 双发射击
+ * None: 停止射击
+ * OneShoot: 从飞机中间发射单发子弹
+ * TwoShoot: 从飞机两侧各发射一发子弹
  */
 enum ShootType {
+  None,
   OneShoot,
   TwoShoot,
 }
@@ -32,46 +34,75 @@ enum ShootType {
  * 玩家控制组件
  * 负责：
  * 1. 处理玩家飞机的触摸移动控制
- * 2. 管理子弹的发射逻辑（单发/双发模式）
+ * 2. 管理子弹的发射逻辑（无射击/单发/双发模式）
  * 3. 处理与敌机的碰撞检测和生命值管理
- * 4. 控制玩家飞机的受击和销毁动画
+ * 4. 控制玩家飞机的受击无敌时间和销毁动画
  */
 @ccclass("Player")
 export class Player extends Component {
-  /** 子弹发射计时器 */
+  /** 子弹发射计时器，用于控制发射间隔 */
   shootTimer = 0;
-  /** 子弹发射间隔时间，单位：秒 */
+
+  /** 子弹发射间隔时间，可在编辑器中调整，单位：秒 */
   @property
   shootRate = 0.3;
-  /** 子弹预制体 */
+
+  /** 单发模式使用的子弹预制体 */
   @property(Prefab)
   bullet1Prefab: Prefab = null;
-  /** 子弹的父节点容器 */
+
+  /** 子弹的父节点容器，用于统一管理所有发射的子弹 */
   @property(Node)
   bulletParent: Node = null;
-  /** 子弹发射位置节点 */
+
+  /** 单发模式的子弹发射位置节点 */
   @property(Node)
   position1: Node = null;
+
+  /** 双发模式使用的子弹预制体 */
   @property(Prefab)
   bullet2Prefab: Prefab = null;
+
+  /** 双发模式左侧子弹发射位置节点 */
   @property(Node)
   position2: Node = null;
+
+  /** 双发模式右侧子弹发射位置节点 */
   @property(Node)
   position3: Node = null;
-  /** 射击类型，默认为单发射击 */
+
+  /** 射击类型，默认为单发射击，生命值为0时切换为停止射击 */
   @property
   shootType: ShootType = ShootType.OneShoot;
+
+  /** 碰撞体组件引用，用于处理与敌机的碰撞检测 */
   collider: Collider2D = null;
+
+  /** 动画组件引用，用于播放受击和销毁动画 */
   @property(Animation)
   anim: Animation = null;
+
+  /** 玩家生命值，为0时游戏结束 */
   @property
   lifeCount = 5;
+
   /** 受击时播放的动画名称 */
   @property(CCString)
   animHit = "";
+
   /** 击毁时播放的动画名称 */
   @property(CCString)
   animDown = "";
+
+  /** 受击后的无敌时间，可在编辑器中调整，单位：秒 */
+  @property
+  invincibleTime = 1;
+
+  /** 无敌时间计时器 */
+  invincibleTimer = 0;
+
+  /** 是否处于无敌状态 */
+  isInvincible = false;
 
   /**
    * 组件加载时调用
@@ -111,16 +142,17 @@ export class Player extends Component {
     otherCollider: Collider2D,
     contact: IPhysics2DContact | null
   ) {
-    console.log("--------lifeCount------", this.lifeCount);
+    if (this.isInvincible) return;
+    this.invincibleTimer = 0;
+    this.isInvincible = true;
     this.lifeCount--;
     if (this.lifeCount > 0) {
-      console.log("--------animHit------");
       this.anim.play(this.animHit);
     } else {
-      console.log("--------animDown------");
       this.anim.play(this.animDown);
     }
     if (this.lifeCount <= 0) {
+      this.shootType = ShootType.None;
       if (this.collider) {
         this.collider.enabled = false;
       }
@@ -178,6 +210,12 @@ export class Player extends Component {
       case ShootType.TwoShoot:
         this.twoShoot(deltaTime);
         break;
+    }
+    if (this.isInvincible) {
+      this.invincibleTimer += deltaTime;
+      if (this.invincibleTimer > this.invincibleTime) {
+        this.isInvincible = false;
+      }
     }
   }
 
