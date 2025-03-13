@@ -98,6 +98,9 @@ export class Player extends Component {
   @property(CCString)
   animDown = "";
 
+  @property(CCString)
+  animIdle = "";
+
   /** 受击后的无敌时间，可在编辑器中调整，单位：秒 */
   @property
   invincibleTime = 1;
@@ -113,6 +116,7 @@ export class Player extends Component {
   twoShootTime = 5;
   /** 双发射击计时器 */
   twoShootTimer = 0;
+  lastReward: Reward = null;
 
   /**
    * 组件加载时调用
@@ -167,6 +171,7 @@ export class Player extends Component {
    * @param reward 道具组件实例
    */
   onContractToReward(reward: Reward) {
+    if (reward === this.lastReward) return;
     switch (reward.rewordType) {
       case RewordType.TwoShoot:
         this.transformToTwoShoot();
@@ -216,6 +221,9 @@ export class Player extends Component {
 
     if (this.lifeCount > 0) {
       this.anim.play(this.animHit);
+      this.anim.once(Animation.EventType.FINISHED, () => {
+        this.anim.play(this.animIdle);
+      });
     } else {
       this.anim.play(this.animDown);
     }
