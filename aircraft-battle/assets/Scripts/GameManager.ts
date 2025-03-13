@@ -38,13 +38,18 @@ export class GameManager extends Component {
 
   /**
    * 增加炸弹道具数量
-   * 当玩家获得炸弹道具时调用
+   * 1. 增加炸弹计数
+   * 2. 触发炸弹数量变化事件
    */
   public addBomb() {
     this.bombNumber++;
     this.node.emit("onBombChange");
   }
 
+  /**
+   * 获取当前炸弹数量
+   * @returns 玩家当前拥有的炸弹数量
+   */
   public getBombNumber() {
     return this.bombNumber;
   }

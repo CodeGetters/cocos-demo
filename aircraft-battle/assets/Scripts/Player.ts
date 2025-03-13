@@ -44,6 +44,12 @@ enum ShootType {
  */
 @ccclass("Player")
 export class Player extends Component {
+  private static instance: Player;
+
+  public static getInstance() {
+    return this.instance;
+  }
+
   /** 子弹发射计时器，用于控制发射间隔 */
   shootTimer = 0;
 
@@ -88,7 +94,7 @@ export class Player extends Component {
 
   /** 玩家生命值，为0时游戏结束 */
   @property
-  lifeCount = 5;
+  private lifeCount = 5;
 
   /** 受击时播放的动画名称 */
   @property(CCString)
@@ -123,6 +129,7 @@ export class Player extends Component {
    * 注册触摸移动事件监听
    */
   protected onLoad(): void {
+    Player.instance = this;
     input.on(Input.EventType.TOUCH_MOVE, this.onTouchMove, this);
 
     // 获取并注册碰撞体的碰撞回调
@@ -217,7 +224,7 @@ export class Player extends Component {
     if (this.isInvincible) return;
     this.invincibleTimer = 0;
     this.isInvincible = true;
-    this.lifeCount--;
+    this.changeLifeCount(-1);
 
     if (this.lifeCount > 0) {
       this.anim.play(this.animHit);
@@ -342,5 +349,22 @@ export class Player extends Component {
       bullet2.setWorldPosition(this.position2.worldPosition);
       bullet3.setWorldPosition(this.position3.worldPosition);
     }
+  }
+  /**
+   * 修改玩家生命值
+   * @param count 生命值变化量，正数增加，负数减少
+   */
+  changeLifeCount(count: number) {
+    this.lifeCount += count;
+    // 触发生命值变化事件
+    this.node.emit("onLifeCountChange");
+  }
+
+  /**
+   * 获取当前生命值
+   * @returns 玩家当前生命值
+   */
+  getLifeCount() {
+    return this.lifeCount;
   }
 }
