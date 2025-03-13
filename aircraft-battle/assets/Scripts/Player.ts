@@ -6,6 +6,7 @@ import {
   Collider2D,
   Component,
   Contact2DType,
+  Enum,
   EventTouch,
   Input,
   input,
@@ -72,7 +73,7 @@ export class Player extends Component {
   position3: Node = null;
 
   /** 射击类型，默认为单发射击，生命值为0时切换为停止射击 */
-  @property
+  @property({ type: Enum(ShootType) })
   shootType: ShootType = ShootType.OneShoot;
 
   /** 碰撞体组件引用，用于处理与敌机的碰撞检测 */

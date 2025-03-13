@@ -22,15 +22,21 @@ export class EnemeyGmager extends Component {
   /** 第三种大型敌机的生成间隔时间，单位：秒 */
   @property
   enemy2SpawnRate = 3;
-  /** 第三种大型敌机的预制体 */
   @property(Prefab)
   enemy2Prefab: Prefab = null;
+  @property
+  rewardSpawnRate = 15;
+  @property(Prefab)
+  reward1Prefab: Prefab = null;
+  @property(Prefab)
+  reward2Prefab: Prefab = null;
 
   start() {
     // 启动定时生成敌机
     this.schedule(this.enemy0Spawn, this.enemy0SpawnRate);
     this.schedule(this.enemy1Spawn, this.enemy1SpawnRate);
     this.schedule(this.enemy2Spawn, this.enemy2SpawnRate);
+    this.schedule(this.rewardSpawn, this.rewardSpawnRate);
   }
 
   /**
@@ -41,6 +47,7 @@ export class EnemeyGmager extends Component {
     this.unschedule(this.enemy0Spawn);
     this.unschedule(this.enemy1Spawn);
     this.unschedule(this.enemy2Spawn);
+    this.unschedule(this.rewardSpawn);
   }
 
   update(deltaTime: number) {}
@@ -49,21 +56,30 @@ export class EnemeyGmager extends Component {
    * 生成第一种小型敌机
    */
   enemy0Spawn() {
-    this.enemySpawn(this.enemy0Prefab, -215, 215, 450);
+    this.objectSpawn(this.enemy0Prefab, -215, 215, 450);
   }
 
   /**
    * 生成第二种中型敌机
    */
   enemy1Spawn() {
-    this.enemySpawn(this.enemy1Prefab, -200, 200, 475);
+    this.objectSpawn(this.enemy1Prefab, -200, 200, 475);
   }
 
   /**
    * 生成第三种大型敌机
    */
   enemy2Spawn() {
-    this.enemySpawn(this.enemy2Prefab, -155, 155, 560);
+    this.objectSpawn(this.enemy2Prefab, -155, 155, 560);
+  }
+
+  rewardSpawn() {
+    const randomNumber = math.randomRangeInt(0, 2);
+    let prefab = null;
+    randomNumber === 0
+      ? (prefab = this.reward1Prefab)
+      : (prefab = this.reward2Prefab);
+    this.objectSpawn(prefab, -207, 207, 474);
   }
 
   /**
@@ -73,7 +89,7 @@ export class EnemeyGmager extends Component {
    * @param maxX x轴最大生成位置
    * @param y y轴生成位置
    */
-  enemySpawn(enemyPrefab: Prefab, minX: number, maxX: number, y: number) {
+  objectSpawn(enemyPrefab: Prefab, minX: number, maxX: number, y: number) {
     // 实例化敌机预制体
     const enemy = instantiate(enemyPrefab);
     // 将敌机添加到管理器节点下
