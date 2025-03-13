@@ -18,6 +18,7 @@ import {
   Vec3,
 } from "cc";
 import { Reward, RewordType } from "./Reward";
+import { GameManager } from "./GameManager";
 const { ccclass, property } = _decorator;
 
 /**
@@ -159,8 +160,10 @@ export class Player extends Component {
   /**
    * 处理与道具的碰撞
    * 处理流程：
-   * 1. 根据道具类型触发对应效果（双发射击/炸弹）
-   * 2. 延迟一帧销毁道具，避免碰撞检测过程中销毁导致的报错
+   * 1. 根据道具类型触发对应效果
+   * 2. TwoShoot: 切换为双发射击模式
+   * 3. Bomb: 增加炸弹道具数量
+   * 4. 延迟一帧销毁道具，避免碰撞检测过程中销毁导致的报错
    * @param reward 道具组件实例
    */
   onContractToReward(reward: Reward) {
@@ -169,14 +172,15 @@ export class Player extends Component {
         this.transformToTwoShoot();
         break;
       case RewordType.Bomb:
+        GameManager.getInstance().addBomb();
         break;
     }
     this.scheduleOnce(() => {
       reward.node?.destroy();
     }, 0);
   }
-  
-  /** 
+
+  /**
    * 切换到双发射击模式
    * 1. 重置双发射击计时器
    * 2. 切换射击类型为双发模式
@@ -186,8 +190,8 @@ export class Player extends Component {
     this.twoShootTimer = 0;
     this.shootType = ShootType.TwoShoot;
   }
-  
-  /** 
+
+  /**
    * 切换回单发射击模式
    * 在以下情况触发：
    * 1. 双发射击持续时间结束
