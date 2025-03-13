@@ -26,7 +26,7 @@
     "_active": true,
     "_components": [],
     "_prefab": {
-      "__id__": 105
+      "__id__": 106
     },
     "_lpos": {
       "__type__": "cc.Vec3",
@@ -57,7 +57,7 @@
     },
     "autoReleaseAssets": false,
     "_globals": {
-      "__id__": 106
+      "__id__": 107
     },
     "_id": "c1d06bad-4b2f-4310-87ed-0217cb694ac9"
   },
@@ -2132,13 +2132,13 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 102
-      },
-      {
         "__id__": 103
       },
       {
         "__id__": 104
+      },
+      {
+        "__id__": 105
       }
     ],
     "_prefab": null,
@@ -2264,7 +2264,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "BombIcon",
+    "_name": "BombUI",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -2288,6 +2288,9 @@
       },
       {
         "__id__": 101
+      },
+      {
+        "__id__": 102
       }
     ],
     "_prefab": null,
@@ -2676,6 +2679,21 @@
     "_id": "61J4xEv3dO2ZRX1bZ5Z6f1"
   },
   {
+    "__type__": "f6e1dOvI29HIZ6OqEG2JG7H",
+    "_name": "",
+    "_objFlags": 0,
+    "__editorExtras__": {},
+    "node": {
+      "__id__": 92
+    },
+    "_enabled": true,
+    "__prefab": null,
+    "numberLabel": {
+      "__id__": 98
+    },
+    "_id": "1b5CFcobVDCZPMY/Gk4PkR"
+  },
+  {
     "__type__": "cc.UITransform",
     "_name": "",
     "_objFlags": 0,
@@ -2771,28 +2789,28 @@
   {
     "__type__": "cc.SceneGlobals",
     "ambient": {
-      "__id__": 107
-    },
-    "shadows": {
       "__id__": 108
     },
-    "_skybox": {
+    "shadows": {
       "__id__": 109
     },
-    "fog": {
+    "_skybox": {
       "__id__": 110
     },
-    "octree": {
+    "fog": {
       "__id__": 111
     },
-    "skin": {
+    "octree": {
       "__id__": 112
     },
-    "lightProbeInfo": {
+    "skin": {
       "__id__": 113
     },
-    "postSettings": {
+    "lightProbeInfo": {
       "__id__": 114
+    },
+    "postSettings": {
+      "__id__": 115
     },
     "bakedWithStationaryMainLight": false,
     "bakedWithHighpLightmap": false

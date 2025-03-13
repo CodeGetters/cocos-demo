@@ -23,15 +23,16 @@ export class GameManager extends Component {
 
   /** 炸弹道具数量 */
   @property
-  bombNumber = 0;
-
+  private bombNumber = 0;
   /**
    * 组件初始化
    * 设置单例实例引用
    */
-  start() {
+  protected onLoad(): void {
     GameManager.instance = this;
   }
+
+  start() {}
 
   update(deltaTime: number) {}
 
@@ -41,5 +42,10 @@ export class GameManager extends Component {
    */
   public addBomb() {
     this.bombNumber++;
+    this.node.emit("onBombChange");
+  }
+
+  public getBombNumber() {
+    return this.bombNumber;
   }
 }
