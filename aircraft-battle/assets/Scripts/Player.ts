@@ -6,6 +6,7 @@ import {
   Collider2D,
   Component,
   Contact2DType,
+  director,
   Enum,
   EventTouch,
   Input,
@@ -244,9 +245,16 @@ export class Player extends Component {
 
   /**
    * 触摸移动事件处理函数
+   * 处理流程：
+   * 1. 检查游戏是否暂停，暂停时不处理移动
+   * 2. 检查玩家是否存活
+   * 3. 根据触摸偏移量计算新位置
+   * 4. 限制飞机在屏幕范围内移动
    * @param event 触摸事件对象，包含触摸位置变化信息
    */
   onTouchMove(event: EventTouch) {
+    // 游戏暂停时不处理移动
+    if (director.isPaused()) return;
     if (this.lifeCount < 1) {
       console.log("--------结束了------");
       return;
@@ -282,6 +290,9 @@ export class Player extends Component {
 
   /**
    * 每帧更新
+   * 处理流程：
+   * 1. 根据射击类型执行对应的射击逻辑
+   * 2. 处理无敌时间计时
    * @param deltaTime 距离上一帧的时间间隔，单位：秒
    */
   update(deltaTime: number) {
